@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
-const User = require("../models/user.models.js");
+const jwt = require('jsonwebtoken');
+const User = require('../models/user.models.js');
 const signup = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -27,7 +28,7 @@ const login = async (req, res) => {
           return res.status(401).json({ message: 'Invalid credentials' });
         }
     
-        const token = jwt.sign({ user: { id: user._id } }, SECRET_KEY);
+        const token = jwt.sign({ user: { id: user._id } }, process.env.SECRET_KEY);
         res.json({ token });
       } catch (err) {
         res.status(500).json({ message: 'Internal server error' });
