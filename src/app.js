@@ -1,11 +1,22 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const authRouter = require('./routes/authRoutes');
 const notesRouter = require('./routes/notesRoutes');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+
+const limiter = rateLimit(
+    {
+        windowMs:  15 * 30 * 1000, 
+        limit: 50, 
+        msg:"Rate Limit Exceeded, try after 15 minutes"
+    }
+);
+
+app.use(limiter);
 
 mongoose.connect(process.env.MONGODB_URI).then(()=>{
     console.log('Connected to Database');
