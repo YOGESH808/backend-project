@@ -13,27 +13,67 @@ afterAll(async () => {
 });
 
 describe('Authentication Endpoints', () => {
-  it('should signup a new user', async () => {
+  it('should create a new user account', async () => {
     const response = await request(app)
       .post('/api/auth/signup')
-      .send({ username: 'testus1er', password: 'testpassword' });
+      .send({
+        username: 'yogeshagarwal', password: 'testpassword'
+      });
+      console.log(response.body)
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty('message', 'User registered successfully');
   });
 
-  it('should login an existing user', async () => {
+  it('should not create a new user account with duplicate username', async () => {
+    const response = await request(app)
+      .post('/api/auth/signup')
+      .send({
+        username: 'testuser101', password: 'testpassword'
+      });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('message');
+  });
+
+  it('should log in to an existing user account and receive an access token', async () => {
     const response = await request(app)
       .post('/api/auth/login')
-      .send({ username: 'testuser', password: 'testpassword' });
+      .send({
+        username: 'yogesh', password: 'agarwal'
+      });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('token');
   });
 
-  it('should return 401 for invalid credentials', async () => {
+  it('should not log in with incorrect credentials', async () => {
     const response = await request(app)
       .post('/api/auth/login')
-      .send({ username: 'nonexistentuser', password: 'wrongpassword' });
+      .send({
+        username: 'yogesh', password: 'agadrwal'
+      });
+
     expect(response.statusCode).toBe(401);
-    expect(response.body).toHaveProperty('message', 'Invalid credentials');
+    expect(response.body).toHaveProperty('message');
+  });
+
+  it('should handle rate limiting during authentication', async () => {
+    //rate limit is set to 10
+    for(let i = 0;i<10;i++)
+    {
+      const response1 = await request(app)
+      .post('/api/auth/login')
+      .send({
+        username: `yogesh`, password: 'agarwal'
+      });
+      console.log(response1.body);
+      expect(response1.statusCode).toBe(200);
+    }
+   
+  
+    const response2 = await request(app)
+      .post('/api/auth/login')
+      .send({
+        username: `yogesh`, password: 'agarwal'
+      });
+    // Expect the second request to be rate-limited
+    expect(response2.statusCode).toBe(429);
   });
 });

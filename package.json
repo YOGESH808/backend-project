@@ -5,6 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "test": "jest",
+    "test:custom-port": "PORT=3001 jest" ,
     "start": "nodemon src/app.js"
   },
   "keywords": [],
