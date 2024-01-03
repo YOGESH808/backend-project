@@ -24,6 +24,8 @@ const noteSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
+noteSchema.index({ title: 'text', content: 'text' });
+
 const Note = mongoose.model('Note', noteSchema);
 
 module.exports = Note;
