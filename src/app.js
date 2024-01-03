@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const limiter = rateLimit(
     {
         windowMs:  15 * 60 * 1000, 
-        limit: 10, 
+        limit: 50, 
         message:"Rate Limit Exceeded, try after 15 minutes"
     }
 );

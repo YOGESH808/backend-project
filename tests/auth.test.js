@@ -19,6 +19,7 @@ describe('Authentication Endpoints', () => {
       .send({
         username: 'yogeshagarwal', password: 'testpassword'
       });
+      console.log(response.body)
     expect(response.statusCode).toBe(201);
   });
 
