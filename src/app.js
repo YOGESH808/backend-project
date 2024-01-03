@@ -33,3 +33,4 @@ app.use('/api',notesRouter);
 app.listen(PORT,()=>{
     console.log("Server is running on Port",PORT);
 })
+module.exports = app;
