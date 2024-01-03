@@ -1,3 +1,6 @@
 # backend-project
 
-setup .env file and add PORT in that 
+setup .env file
+add following in the .env
+PORT = your port
+SECRET_KEY = your secret key
