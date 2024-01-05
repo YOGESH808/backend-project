@@ -43,7 +43,8 @@ const createNote = async (req, res) => {
             content,
             owner: req.user._id,
         });
-
+        
+        if(!title || !content) return res.status(401).json({error:'title or content is required'});
         const savedNote = await newNote.save();
         res.status(201).json(savedNote);
     } catch (error) {

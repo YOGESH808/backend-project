@@ -16,7 +16,7 @@ const authenticateUser = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     res.status(401).json({ error: 'Please authenticate.' });
   }
 };
