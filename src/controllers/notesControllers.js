@@ -76,13 +76,37 @@ const updateNoteById = async (req, res) => {
 
 const deleteNoteById = async (req, res) => {
     try {
-        const deletedNote = await Note.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
-    
-        if (!deletedNote) {
-          return res.status(404).json({ error: 'Note not found' });
+        // Algorithm : check this note is shared or owned by the user
+        //if note is owned by the user, delete the note 
+        //else if note is shared in this case, go to the owner of the note and remove the current user from shared array
+
+        // Check if this note is shared or owned by the user
+        // 1. find the note
+        const note = await Note.findOne({_id:req.params.id});
+        console.log(note);
+        //2. check if owner of note is current user
+        if(note.owner.equals(req.user._id))
+        {
+            //if note is owned by the user, delete the note 
+            const deletedNote = await Note.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+            if (!deletedNote) {
+              return res.status(404).json({ error: 'Note not found' });
+            }
+            return res.json(deletedNote);
         }
+        else if(note.sharedWith.includes(req.user._id)){
+          const updatedNote = await Note.findByIdAndUpdate(
+            req.params.id,
+            { $pull: { sharedWith: req.user._id } },
+            { new: true }
+          );
     
-        res.json(deletedNote);
+          if (!updatedNote) {
+            return res.status(404).json({ error: 'Note not found' });
+          }
+    
+          res.json(updatedNote);
+        }
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
